@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Annotations</title>
+        <style type="text/css">
+            #annotations {
+                border: 1px solid black;
+            }
+        </style>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.3/fabric.min.js"></script>
+    </head>
+
+    <body>
+        <canvas id="annotations" width="600" height="500"></canvas>
+
+        <script type="text/javascript">
+            var canvas = new fabric.Canvas('annotations');
+            var backgroundImageUrl = 'https://s-media-cache-ak0.pinimg.com/564x/d1/57/26/d157261126e10cd2c3e020aad78b6d1e.jpg';
+            var log = function(o) {
+                console.log(o);
+            };
+            var gradientTransitionIntervalId;
+
+            var drawCircle = function(event){
+                var pointer = canvas.getPointer(event.e);
+
+                var min = 48;
+                var max = 227;
+                var diff = 3;
+
+                var red = min;
+                var blue = max;
+
+                var circle = new fabric.Circle({
+                    radius: 30,
+                    top: pointer.y,
+                    left: pointer.x,
+                    originX: 'center',
+                    originY: 'center',
+                    selectable: false,
+                    hoverCursor: 'auto'
+                });
+
+                circle.setGradient('fill', {
+                    type: 'radial',
+                    x1: circle.radius,
+                    y1: circle.radius,
+                    x2: circle.radius,
+                    y2: circle.radius,
+                    r1: (0.20) * circle.radius,
+                    r2: circle.radius,
+                    colorStops: {
+                        0: 'rgb(48,32,227)',
+                        1: 'rgb(48,32,227)'
+                    }
+                });
+
+                gradientTransitionIntervalId = setInterval(function() {
+                    red = (red + diff) > max ? max : (red + diff);
+                    blue = (blue - diff) < min ? min : (blue - min);
+
+                    circle.setGradient('fill', {
+                        type: 'radial',
+                        x1: circle.radius,
+                        y1: circle.radius,
+                        x2: circle.radius,
+                        y2: circle.radius,
+                        r1: (0.20) * circle.radius,
+                        r2: 2 * circle.radius,
+                        colorStops: {
+                            0: 'rgb(' + red + ',32,' + blue + ')',
+                            1: 'rgb(48,32,227)'
+                        }
+                    });
+
+                    canvas.renderAll();
+                }, 50);
+
+                canvas.add(circle);
+            };
+
+            var endGradientTransition = function () {
+                window.clearInterval(gradientTransitionIntervalId);
+            };
+
+            canvas.setBackgroundImage(backgroundImageUrl, canvas.renderAll.bind(canvas));
+            canvas.on({
+                'mouse:down': drawCircle,
+                'mouse:up': endGradientTransition
+            });
+        </script>
+    </body>
+</html>
