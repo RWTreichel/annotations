@@ -84,10 +84,97 @@
                 window.clearInterval(gradientTransitionIntervalId);
             };
 
+            var addAnnotation = function (event) {
+                var pointer = canvas.getPointer(event.e);
+
+                var pin = new fabric.Circle({
+                    radius: 5,
+                    fill: 'green'
+                    // originX: 'center',
+                    // originY: 'center'
+                });
+                // canvas.add(pin);
+                // console.log('pin', pin);
+
+                var arrow = new fabric.Triangle({
+                    width: 10,
+                    height: 10,
+                    angle: -90,
+                    // top: 50,
+                    left: 10,
+                    originX: 'center',
+                    originY: 'center',
+                    fill: 'red' //'#87D9F5'
+                });
+                // canvas.add(arrow);
+                // console.log('arrow', arrow);
+
+                var bgBox = new fabric.Rect({
+                    width: 300,
+                    height: 150,
+                    fill: '#87D9F5',
+                    // top: 50,
+                    left: 165,
+                    originX: 'center',
+                    originY: 'center',
+                    rx: 10,
+                    ry: 10
+                });
+                // canvas.add(bgBox);
+                // console.log('bgBox', bgBox);
+
+                var label = new fabric.Text('Severity: ', {
+                    fontSize: 14,
+                    backgroundColor: '#87D9F5',
+                    top: -65, // 150/2 - 10 ]* -1
+                    left: 30 // 5 + 10 + 15
+                    // originX: 'center',
+                    // originY: 'center'
+                });
+
+                var severityInputBox = new fabric.Textbox('0', {
+                    fontSize: 14, // in pixels
+                    backgroundColor: 'white',
+                    top: -65,
+                    left: 95,
+                    width: 30
+                });
+                // canvas.add(severityInputBox);
+                // console.log('severityInputBox', severityInputBox);
+
+                var group = new fabric.Group([pin], {
+                    // selectable: false,
+                    top: pointer.y,
+                    left: pointer.x,
+                    originX: 'center',
+                    originY: 'center'
+                });
+                canvas.add(group);
+                console.log('group', group);
+
+                group.add(arrow);
+                group.add(bgBox);
+                group.add(label);
+                group.add(severityInputBox);
+
+                canvas.off('mouse:down');
+            };
+
+            // On click (mousedown)...
+            // Append Annotation if none exists and in annotation mode
+                // Annotation is a textbox-looking object, with a severity l/tx combo and a medical note l/tx combo
+                    // Preferably, small arrow pointing to center of annotation "pin", centered along edge of Annotation textbox
+
             canvas.setBackgroundImage(backgroundImageUrl, canvas.renderAll.bind(canvas));
+            // Color-changing circles based on click duration
+            // canvas.on({
+            //     'mouse:down': drawCircle,
+            //     'mouse:up': endGradientTransition
+            // });
+
+            // Annotation textboxes on click
             canvas.on({
-                'mouse:down': drawCircle,
-                'mouse:up': endGradientTransition
+                'mouse:down': addAnnotation
             });
         </script>
     </body>
