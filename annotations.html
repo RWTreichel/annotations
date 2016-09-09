@@ -2,20 +2,47 @@
 <html lang="en">
     <head>
         <meta charset="utf-8"/>
+
         <title>Annotations</title>
+
         <style type="text/css">
             #annotations {
                 border: 1px solid black;
+                position: relative;
+                width: 600px;
+                height: 500px;
+            }
+
+            .annotation {
+                border: 1px solid red;
+                width: 100px;
+                height: 100px;
             }
         </style>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.3/fabric.min.js"></script>
+
+        <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.3/fabric.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.1.0.js"
+                integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="
+                crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
 
     <body>
-        <canvas id="annotations" width="600" height="500"></canvas>
+        <!-- <canvas id="annotations" width="600" height="500"></canvas> -->
+        <div id="annotations"></div>
 
         <script type="text/javascript">
-            var canvas = new fabric.Canvas('annotations');
+            // var canvas = new fabric.Canvas('annotations');
             var backgroundImageUrl = 'https://s-media-cache-ak0.pinimg.com/564x/d1/57/26/d157261126e10cd2c3e020aad78b6d1e.jpg';
             var log = function(o) {
                 console.log(o);
@@ -165,16 +192,50 @@
                 // Annotation is a textbox-looking object, with a severity l/tx combo and a medical note l/tx combo
                     // Preferably, small arrow pointing to center of annotation "pin", centered along edge of Annotation textbox
 
-            canvas.setBackgroundImage(backgroundImageUrl, canvas.renderAll.bind(canvas));
-            // Color-changing circles based on click duration
+            // Set canvas background image...
+            // canvas.setBackgroundImage(backgroundImageUrl, canvas.renderAll.bind(canvas));
+
+            // Color-changing circles based on click duration...
             // canvas.on({
             //     'mouse:down': drawCircle,
             //     'mouse:up': endGradientTransition
             // });
 
-            // Annotation textboxes on click
-            canvas.on({
-                'mouse:down': addAnnotation
+            // Annotation textboxes on click...
+            // canvas.on({
+            //     'mouse:down': addAnnotation
+            // });
+
+            // jQuery Textboxes on click...
+            var jCanvas = $('#annotations');
+            console.log('jCanvas', jCanvas);
+
+            // jCanvas.append('<div class="annotation">Annotation</div>');
+            jCanvas.click(function(e) {
+                console.log('e', e);
+
+                var annotation = $('<div class="annotation"></div>')
+                    .css('position', 'absolute')
+                    .css('top', e.offsetY)
+                    .css('left', e.offsetX);
+
+                var textarea = $('<textarea></textarea>')
+                    .attr('rows', '4')
+                    .attr('cols', '30')
+                    .css('resize', 'none')
+                    .on('input', function(e) {
+                        console.log(e.target.value);
+                    });
+
+                annotation.popover({
+                    html: true,
+                    title: 'hey',
+                    content: function() {
+                        return textarea;
+                    }
+                });
+
+                $(this).append(annotation);
             });
         </script>
     </body>
